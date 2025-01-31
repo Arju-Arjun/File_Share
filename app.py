@@ -33,5 +33,4 @@ if st.button("Submit"):
             else:
                 st.error("Invalid access code or file already deleted!")
 
-else:
-    st.error("Wrong pass key!")
+
