@@ -29,8 +29,8 @@ elif option == "Download or Delete File":
         else:
             st.error("Invalid access code!")
 
-    if st.button("Delete File"):
-        if file_handler.delete_file_by_code(access_code):
-            st.success("File deleted successfully!")
-        else:
-            st.error("Invalid access code or file already deleted!")
+    # if st.button("Delete File"):
+    #     if file_handler.delete_file_by_code(access_code):
+    #         st.success("File deleted successfully!")
+    #     else:
+    #         st.error("Invalid access code or file already deleted!")
