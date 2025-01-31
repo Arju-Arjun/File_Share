@@ -41,21 +41,21 @@ def get_file_by_code(file_code):
 
     return file_codes.get(file_code, None)
 
-def delete_file_by_code(file_code):
-    """Deletes a file using the access code."""
-    with open(CODE_FILE, "r") as f:
-        file_codes = json.load(f)
+# def delete_file_by_code(file_code):
+#     """Deletes a file using the access code."""
+#     with open(CODE_FILE, "r") as f:
+#         file_codes = json.load(f)
 
-    file_name = file_codes.get(file_code)
+#     file_name = file_codes.get(file_code)
 
-    if file_name:
-        file_path = os.path.join(UPLOAD_DIR, file_name)
-        if os.path.exists(file_path):
-            os.remove(file_path)
-            del file_codes[file_code]  # Remove entry from mapping
+#     if file_name:
+#         file_path = os.path.join(UPLOAD_DIR, file_name)
+#         if os.path.exists(file_path):
+#             os.remove(file_path)
+#             del file_codes[file_code]  # Remove entry from mapping
 
-            with open(CODE_FILE, "w") as f:
-                json.dump(file_codes, f)
+#             with open(CODE_FILE, "w") as f:
+#                 json.dump(file_codes, f)
                 
-            return True
-    return False
+#             return True
+#     return False
