@@ -7,7 +7,6 @@ st.title("Secure File Upload & Access System")
 name = st.text_input("Enter pass key", type="password")
 
 if st.button("Submit"):
-    if name == "arjun":
         st.subheader("Upload a File")
         uploaded_file = st.file_uploader("Choose a file", type=None)
 
@@ -34,5 +33,5 @@ if st.button("Submit"):
             else:
                 st.error("Invalid access code or file already deleted!")
 
-    else:
-        st.error("Wrong pass key!")
+else:
+    st.error("Wrong pass key!")
