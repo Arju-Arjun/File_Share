@@ -234,10 +234,10 @@ st.markdown(
         <a href="https://www.instagram.com/_arjun._x_/">
             <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="30" height="30">
         </a>
-        <a href="https://github.com/_arjun_">
+        <a href="https://github.com/Arju-Arjun">
             <img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Logo_GitHub.png" width="30" height="30">
         </a>
-        <a href="https://www.linkedin.com/in/arjun-profile/">
+        <a href="https://www.linkedin.com/in/arjun-k-525a45334/">
             <img src="https://upload.wikimedia.org/wikipedia/commons/7/76/LinkedIn_Logo_2023.png" width="30" height="30">
         </a>
     </div>
