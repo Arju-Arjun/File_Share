@@ -3,6 +3,7 @@ import random
 import os
 import json
 import tempfile
+import zipfile
 
 # Existing constants and data loading functions...
 UPLOAD_DIR = "uploaded_files"
