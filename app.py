@@ -224,4 +224,12 @@ elif option == "Live Chat":
                     st.error("Invalid chat room code. Please try again.")
         else:
             st.error("Please enter your user name before joining.")
-st.markdown("""[![Instagram](https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png, width="10" height="10")](https://www.instagram.com/_arjun._x_/)""")
+# st.markdown("""[![Instagram](https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png)](https://www.instagram.com/_arjun._x_/)""")
+import streamlit as st
+
+# Display a clickable Instagram icon with smaller size
+st.markdown("""
+[<img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="30" height="30">](https://www.instagram.com/_arjun._x_/)
+""")
+
+
