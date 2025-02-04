@@ -238,7 +238,7 @@ st.markdown(
             <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" width="30" height="30">
         </a>
         <a href="https://www.linkedin.com/in/arjun-k-525a45334/">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/76/LinkedIn_Logo_2023.png" width="30" height="30">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" width="30" height="30">
         </a>
     </div>
     ''',
