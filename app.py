@@ -236,7 +236,6 @@ st.markdown(
         <a href="https://www.instagram.com/_arjun._x_/">
             <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="30" height="30">
         </a>
-              
         <a href="https://github.com/Arju-Arjun">
             <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" width="30" height="30">
         </a>
