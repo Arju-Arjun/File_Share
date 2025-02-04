@@ -209,7 +209,7 @@ elif option == "Live Chat":
                         st.markdown(f"**{msg['user']}**: {msg['message']}")
 
                     # Input to send message
-                    chat_input = st.text_input("Type your message")
+                    # chat_input = st.text_input("Type your message")
                     
                     if st.button("Send Message"):
                         if chat_input:
