@@ -1,57 +1,68 @@
 import streamlit as st
-import file_handler
 import os
+from datetime import datetime
 
-st.title("Secure File Upload & Access System")
+# Directory to store uploaded files
+UPLOAD_DIR = "uploaded_files"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+# Hardcoded access code (for demonstration purposes)
+ACCESS_CODE = "1234"  # Change this to your desired numerical code
 
+# Page title
+st.title("File Sharing and Access App")
 
+# Access code input
+access_code = st.text_input("Enter Access Code", type="password")
 
-# Sidebar to choose action
-option = st.sidebar.radio("Choose an option:", ["Upload File", "Download or Delete File"])
-# code=st.text_input("enter code")
-if option == "Upload File":
-    st.subheader("Upload a File")
-    uploaded_file = st.file_uploader("Choose a file", type=None)
+# Check if the access code is correct
+if access_code == ACCESS_CODE:
+    st.success("Access granted! You can now upload, view, and download files.")
 
-    if uploaded_file is not None:
-        file_code = file_handler.save_file(uploaded_file)
-        st.success(f"File '{uploaded_file.name}' uploaded successfully!")
-        st.write(f"Your access code: `{file_code}`")
-        st.write("Use this code to access or delete your file later.")
+    # File upload section
+    st.header("Upload Files")
+    uploaded_files = st.file_uploader("Choose files to upload", accept_multiple_files=True, type=None)
+    if uploaded_files:
+        for uploaded_file in uploaded_files:
+            file_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
+            with open(file_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            st.success(f"File '{uploaded_file.name}' uploaded successfully!")
 
-elif option == "Access a File":
-    st.subheader("Access a File")
-    access_code = st.text_input("Enter access code to retrieve file")
+    # File list section
+    st.header("Uploaded Files")
+    files = os.listdir(UPLOAD_DIR)
+    if files:
+        # Display a table of uploaded files
+        file_data = []
+        for file_name in files:
+            file_path = os.path.join(UPLOAD_DIR, file_name)
+            file_size = os.path.getsize(file_path)
+            upload_time = datetime.fromtimestamp(os.path.getmtime(file_path)).strftime('%Y-%m-%d %H:%M:%S')
+            file_data.append([file_name, file_size, upload_time])
 
+        # Display the table
+        st.table({
+            "File Name": [item[0] for item in file_data],
+            "File Size (Bytes)": [item[1] for item in file_data],
+            "Upload Time": [item[2] for item in file_data]
+        })
 
-
-def text_to_numbers(text):
-    """Convert text to numerical representation based on letter positions."""
-    return ''.join(str(ord(char) - 96) if char.isalpha() else char for char in text.lower())
-
-if st.button("Download File"):
-    file_name = file_handler.get_file_by_code(access_code)
-    
-    if file_name:
-        # Convert file name to numerical format
-        numeric_file_name = text_to_numbers(file_name)
-        file_path = os.path.join("uploads", file_name)
-        
-        st.download_button(label=f"Download {numeric_file_name}", 
-                           data=open(file_path, "rb").read(), 
-                           file_name=f"{numeric_file_name}.txt")  # Changing the extension to .txt for clarity
+        # File download section
+        st.header("Download Files")
+        selected_file = st.selectbox("Select a file to download", files)
+        if selected_file:
+            file_path = os.path.join(UPLOAD_DIR, selected_file)
+            with open(file_path, "rb") as f:
+                file_bytes = f.read()
+            st.download_button(
+                label=f"Download {selected_file}",
+                data=file_bytes,
+                file_name=selected_file,
+                mime="application/octet-stream"
+            )
     else:
-        st.error("Invalid access code!")
-
-
-
-
-
-
-
-    # if st.button("Delete File"):
-    #     if file_handler.delete_file_by_code(access_code):
-    #         st.success("File deleted successfully!")
-    #     else:
-    #         st.error("Invalid access code or file already deleted!")
+        st.info("No files uploaded yet.")
+else:
+    if access_code:  # Only show error if the user has entered something
+        st.error("Incorrect access code. Please try again.")
