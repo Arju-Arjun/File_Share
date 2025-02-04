@@ -182,9 +182,11 @@ elif option == "Live Chat":
                         st.session_state[chat_code].append(new_message)
                         chat_rooms[chat_code]["messages"].append(new_message)
                         save_json(CHAT_ROOMS_FILE, chat_rooms)
-
-                        st.session_state.update({f"chat_input_{chat_code}": ""})
+                
+                        # ✅ Clear input first, then rerun
+                        st.session_state[f"chat_input_{chat_code}"] = ""  
                         st.experimental_rerun()
+
             else:
                 st.error("Invalid chat room code.")
         else:
