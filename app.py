@@ -164,19 +164,23 @@ elif option == "Live Chat":
 
                 if chat_code not in st.session_state:
                     st.session_state[chat_code] = chat_rooms[chat_code]["messages"]
-
+                
+                # Display chat messages
                 for msg in st.session_state[chat_code]:
                     st.markdown(f"**{msg['user']}**: {msg['message']}")
-
+                
+                # Chat input
                 chat_input = st.text_input("Type your message", key=f"chat_input_{chat_code}")
-
+                
                 if st.button("Send Message"):
                     if chat_input:
                         new_message = {"user": user_name, "message": chat_input}
                         st.session_state[chat_code].append(new_message)
                         chat_rooms[chat_code]["messages"].append(new_message)
                         save_json(CHAT_ROOMS_FILE, chat_rooms)
-                        st.rerun()
+                
+                        # Rerun the app to reflect the new message
+                        st.experimental_rerun()
             else:
                 st.error("Invalid chat room code.")
         else:
