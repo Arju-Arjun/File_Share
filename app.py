@@ -23,6 +23,32 @@ def save_access_codes(data):
 # Load existing access codes
 file_codes = load_access_codes()
 
+# Navigation Bar
+st.markdown("""
+    <style>
+        .navbar {
+            background-color: #4CAF50;
+            overflow: hidden;
+            padding: 10px;
+            text-align: center;
+        }
+        .navbar a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+    <div class="navbar">
+        <a href="/?page=upload">Text Share</a>
+        <a href="/?page=access">Access File</a>
+    </div>
+""", unsafe_allow_html=True)
+
 st.title("Secure File Upload & Access")
 
 # Sidebar Navigation
