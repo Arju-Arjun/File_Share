@@ -173,28 +173,49 @@ elif option == "Folder Access":
             st.error("Invalid access code. Please try again.")
 
 elif option == "Live Chat":
-    st.sidebar.title("Join a Chat Room")
-    chat_code = st.sidebar.text_input("Enter Chat Room Code")
+    st.sidebar.title("Live Chat Options")
+    chat_option = st.sidebar.radio("Select Option", ["Create a Chat Room", "Join a Chat Room"])
 
-    if chat_code:
-        # If the chat code exists, allow users to chat in that room
-        if chat_code in chat_rooms:
-            # Initialize session state for chat messages if not already present
-            if "messages" not in st.session_state:
-                st.session_state.messages = []
+    if chat_option == "Create a Chat Room":
+        st.header("Create a New Chat Room")
+        chat_name = st.text_input("Enter a name for your chat room")
+        
+        if st.button("Create Chat Room"):
+            if chat_name:
+                # Generate a unique chat room code
+                chat_code = str(random.randint(1000, 9999))
                 
-            st.header(f"Chat Room {chat_code}")
-            chat_input = st.text_input("Type your message")
-            
-            if st.button("Send Message"):
-                if chat_input:
-                    # Append the message to the chat room's messages
-                    st.session_state.messages.append({"user": chat_code, "message": chat_input})
-                    st.text_input("Type your message", value="", key="chat_input")  # Clear input box
+                # Store the new chat room in chat_rooms
+                chat_rooms[chat_code] = {"name": chat_name, "messages": []}
+                save_chat_rooms(chat_rooms)
+                
+                st.success(f"Chat room '{chat_name}' created successfully! Your chat room code is: {chat_code}")
+            else:
+                st.error("Please enter a name for the chat room.")
 
-            # Display chat messages
-            for msg in st.session_state.messages:
-                st.markdown(f"**{msg['user']}**: {msg['message']}")
+    elif chat_option == "Join a Chat Room":
+        st.header("Join a Chat Room")
+        room_code = st.text_input("Enter a chat room code to join")
+        
+        if st.button("Join Chat Room"):
+            if room_code in chat_rooms:
+                # Initialize chat session for the room
+                if "messages" not in st.session_state:
+                    st.session_state.messages = chat_rooms[room_code]["messages"]
+                
+                st.subheader(f"Chat Room: {chat_rooms[room_code]['name']}")
+                chat_input = st.text_input("Type your message")
+                
+                if st.button("Send Message"):
+                    if chat_input:
+                        # Append the new message
+                        st.session_state.messages.append(f"You: {chat_input}")
+                        chat_rooms[room_code]["messages"] = st.session_state.messages  # Save the updated messages
+                        save_chat_rooms(chat_rooms)
+                        st.text_input("Type your message", value="", key="chat_input")  # Clear input box
 
-        else:
-            st.error("Invalid chat room code. Please try again.")
+                # Display messages
+                for message in st.session_state.messages:
+                    st.markdown(f"{message}")
+            else:
+                st.error("Invalid chat room code. Please try again.")
