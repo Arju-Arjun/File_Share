@@ -172,33 +172,10 @@ elif option == "Folder Access":
 elif option == "Live Chat":
     st.sidebar.title("Live Chat Options")
     chat_action = st.sidebar.radio("Choose an action", ("Create a New Chat", "Join an Existing Chat"))
-    
-    if chat_action == "Create a New Chat":
-        # Prompt for user name when creating a chat
-        user_name = st.text_input("Enter your user name", value="")
-        
-        if user_name:
-            # Create a new chat room
-            chat_code = str(random.randint(1000, 9999))
-            
-            # Initialize chat room with an empty message list
-            chat_rooms[chat_code] = {"messages": []}
-            save_chat_rooms(chat_rooms)
-            
-            st.header("Create a New Chat Room")
-            st.success(f"Your chat room is created! Share this code with others to join: {chat_code}")
-            st.write(f"Your user name: {user_name}")
-            
-        else:
-            st.error("Please enter your user name.")
-
-    elif option == "Live Chat":
-    st.sidebar.title("Live Chat Options")
-    chat_action = st.sidebar.radio("Choose an action", ("Create a New Chat", "Join an Existing Chat"))
 
     if chat_action == "Create a New Chat":
         user_name = st.text_input("Enter your user name", value="")
-        
+
         if user_name:
             chat_code = str(random.randint(1000, 9999))
             chat_rooms[chat_code] = {"messages": []}
@@ -240,5 +217,3 @@ elif option == "Live Chat":
                     st.error("Invalid chat room code. Please try again.")
         else:
             st.error("Please enter your user name before joining.")
-
-
