@@ -132,12 +132,16 @@ if option == "Live Chat":
                         chat_rooms[room_code]["messages"] = st.session_state.messages  # Save the updated messages
                         save_chat_rooms(chat_rooms)
                         
-                        # Re-render the chat messages
+                        # Re-render the chat messages (this part is key for immediate display)
                         with chat_display.container():
                             for message in st.session_state.messages:
                                 st.markdown(message)
                         
-                        # Clear the input box by resetting it
-                        st.text_input("Type your message", value="", key="chat_input")
+                        # Clear the input box after sending
+                        st.session_state.chat_input = ""  # Reset the chat input box
+
+                # Display the input box with previous message cleared
+                chat_input = st.text_input("Type your message", value=st.session_state.chat_input)
+                
             else:
                 st.error("Invalid chat room code or missing name. Please try again.")
