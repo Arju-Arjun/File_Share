@@ -136,6 +136,7 @@ elif option == "Folder Access":
             st.error("Invalid access code!")
 
 # Live Chat
+# Live Chat
 elif option == "Live Chat":
     st.sidebar.title("Live Chat Options")
     chat_action = st.sidebar.radio("Choose an action", ("Create a New Chat", "Join an Existing Chat"))
@@ -175,13 +176,15 @@ elif option == "Live Chat":
                 if st.button("Send Message"):
                     if chat_input:
                         new_message = {"user": user_name, "message": chat_input}
+                        # Append the new message to session state and chat_rooms
                         st.session_state[chat_code].append(new_message)
                         chat_rooms[chat_code]["messages"].append(new_message)
                         save_json(CHAT_ROOMS_FILE, chat_rooms)
 
-                        # Rerun the app to reflect the new message
-                        st.experimental_rerun()
+                        # Directly update the UI with new message
+                        st.session_state[f"new_message_{chat_code}"] = new_message  # Store the new message in session state
             else:
                 st.error("Invalid chat room code.")
         else:
             st.error("Enter a user name before joining.")
+
