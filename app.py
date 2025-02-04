@@ -172,42 +172,55 @@ elif option == "Live Chat":
     chat_action = st.sidebar.radio("Choose an action", ("Create a New Chat", "Join an Existing Chat"))
     
     if chat_action == "Create a New Chat":
-        # Create a new chat room
-        chat_code = str(random.randint(1000, 9999))
+        # Prompt for user name when creating a chat
+        user_name = st.text_input("Enter your user name", value="")
         
-        # Initialize chat room with an empty message list
-        chat_rooms[chat_code] = {"messages": []}
-        save_chat_rooms(chat_rooms)
-        
-        st.header("Create a New Chat Room")
-        st.success(f"Your chat room is created! Share this code with others to join: {chat_code}")
-        
+        if user_name:
+            # Create a new chat room
+            chat_code = str(random.randint(1000, 9999))
+            
+            # Initialize chat room with an empty message list
+            chat_rooms[chat_code] = {"messages": []}
+            save_chat_rooms(chat_rooms)
+            
+            st.header("Create a New Chat Room")
+            st.success(f"Your chat room is created! Share this code with others to join: {chat_code}")
+            st.write(f"Your user name: {user_name}")
+            
+        else:
+            st.error("Please enter your user name.")
+
     elif chat_action == "Join an Existing Chat":
-        # Join an existing chat room
-        chat_code = st.text_input("Enter Chat Room Code")
+        # Prompt for user name when joining a chat
+        user_name = st.text_input("Enter your user name", value="")
         
-        if chat_code:
-            if chat_code in chat_rooms:
-                st.header(f"Chat Room {chat_code}")
-                if "messages" not in st.session_state:
-                    st.session_state.messages = []
+        if user_name:
+            # Join an existing chat room
+            chat_code = st.text_input("Enter Chat Room Code")
+            
+            if chat_code:
+                if chat_code in chat_rooms:
+                    st.header(f"Chat Room {chat_code}")
+                    if "messages" not in st.session_state:
+                        st.session_state.messages = []
 
-                # Display existing messages in the chat room
-                for msg in chat_rooms[chat_code]["messages"]:
-                    st.markdown(f"**{msg['user']}**: {msg['message']}")
+                    # Display existing messages in the chat room
+                    for msg in chat_rooms[chat_code]["messages"]:
+                        st.markdown(f"**{msg['user']}**: {msg['message']}")
 
-                # Input to send message
-                chat_input = st.text_input("Type your message")
-                
-                if st.button("Send Message"):
-                    if chat_input:
-                        # Add the message to the chat room's messages
-                        user_name = f"User {random.randint(1, 100)}"  # You can replace this with actual user names
-                        chat_rooms[chat_code]["messages"].append({"user": user_name, "message": chat_input})
-                        save_chat_rooms(chat_rooms)
-                        
-                        # Show the new message in the chat
-                        st.session_state.messages.append({"user": user_name, "message": chat_input})
-                        st.text_input("Type your message", value="", key="chat_input")  # Clear input box
-            else:
-                st.error("Invalid chat room code. Please try again.")
+                    # Input to send message
+                    chat_input = st.text_input("Type your message")
+                    
+                    if st.button("Send Message"):
+                        if chat_input:
+                            # Add the message to the chat room's messages
+                            chat_rooms[chat_code]["messages"].append({"user": user_name, "message": chat_input})
+                            save_chat_rooms(chat_rooms)
+                            
+                            # Show the new message in the chat
+                            st.session_state.messages.append({"user": user_name, "message": chat_input})
+                            st.text_input("Type your message", value="", key="chat_input")  # Clear input box
+                else:
+                    st.error("Invalid chat room code. Please try again.")
+        else:
+            st.error("Please enter your user name before joining.")
