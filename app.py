@@ -13,6 +13,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 ACCESS_CODES_FILE = "access_codes.json"
 TEXT_SHARES_FILE = "text_shares.json"
 FOLDER_SHARES_FILE = "folder_shares.json"
+CHAT_ROOMS_FILE = "chat_rooms.json"
 
 # Dictionary to store text shares
 def load_access_codes():
@@ -45,16 +46,27 @@ def save_folder_shares(data):
     with open(FOLDER_SHARES_FILE, "w") as f:
         json.dump(data, f)
 
-# Load existing access codes
+def load_chat_rooms():
+    if os.path.exists(CHAT_ROOMS_FILE):
+        with open(CHAT_ROOMS_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_chat_rooms(data):
+    with open(CHAT_ROOMS_FILE, "w") as f:
+        json.dump(data, f)
+
+# Load existing access codes, text shares, folder shares, and chat rooms
 file_codes = load_access_codes()
 text_shares = load_text_shares()
 folder_shares = load_folder_shares()
+chat_rooms = load_chat_rooms()
 
-st.title("Secure File & Text Sharing")
+st.title("Secure File & Text Sharing with Live Chat")
 
 # Sidebar Navigation
 st.sidebar.title("Navigation")
-option = st.sidebar.radio("Select an option", ("File Share", "File Access", "Text Share", "Text Access", "Folder Share", "Folder Access"))
+option = st.sidebar.radio("Select an option", ("File Share", "File Access", "Text Share", "Text Access", "Folder Share", "Folder Access", "Live Chat"))
 
 if option == "File Share":
     st.header("Upload a File")
@@ -159,3 +171,30 @@ elif option == "Folder Access":
                 st.download_button("Download Folder", f, file_name=os.path.basename(zip_path))
         else:
             st.error("Invalid access code. Please try again.")
+
+elif option == "Live Chat":
+    st.sidebar.title("Join a Chat Room")
+    chat_code = st.sidebar.text_input("Enter Chat Room Code")
+
+    if chat_code:
+        # If the chat code exists, allow users to chat in that room
+        if chat_code in chat_rooms:
+            # Initialize session state for chat messages if not already present
+            if "messages" not in st.session_state:
+                st.session_state.messages = []
+                
+            st.header(f"Chat Room {chat_code}")
+            chat_input = st.text_input("Type your message")
+            
+            if st.button("Send Message"):
+                if chat_input:
+                    # Append the message to the chat room's messages
+                    st.session_state.messages.append({"user": chat_code, "message": chat_input})
+                    st.text_input("Type your message", value="", key="chat_input")  # Clear input box
+
+            # Display chat messages
+            for msg in st.session_state.messages:
+                st.markdown(f"**{msg['user']}**: {msg['message']}")
+
+        else:
+            st.error("Invalid chat room code. Please try again.")
