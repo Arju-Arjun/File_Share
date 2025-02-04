@@ -205,11 +205,12 @@ elif option == "Live Chat":
                         st.session_state.messages = []
 
                     # Display existing messages in the chat room
+                    chat_input = st.text_input("Type your message")
                     for msg in chat_rooms[chat_code]["messages"]:
                         st.markdown(f"**{msg['user']}**: {msg['message']}")
 
                     # Input to send message
-                    chat_input = st.text_input("Type your message")
+                   
                     
                     if st.button("Send Message"):
                         if chat_input:
