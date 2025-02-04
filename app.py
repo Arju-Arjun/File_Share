@@ -108,7 +108,7 @@ if option == "Live Chat":
                 for member in chat_rooms[room_code]["members"]:
                     st.write(member)
                 
-                # Initialize chat session for the room
+                # Initialize chat session for the room if not initialized
                 if "messages" not in st.session_state:
                     st.session_state.messages = chat_rooms[room_code]["messages"]
                 
@@ -119,7 +119,7 @@ if option == "Live Chat":
                         st.markdown(message)
                 
                 # Send new message
-                chat_input = st.text_input("Type your message")
+                chat_input = st.text_input("Type your message", value="")
                 
                 if st.button("Send Message"):
                     if chat_input:
@@ -141,7 +141,7 @@ if option == "Live Chat":
                         st.session_state.chat_input = ""  # Reset the chat input box
 
                 # Display the input box with previous message cleared
-                chat_input = st.text_input("Type your message", value=st.session_state.chat_input)
+                chat_input = st.text_input("Type your message", value="")
                 
             else:
                 st.error("Invalid chat room code or missing name. Please try again.")
