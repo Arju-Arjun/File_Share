@@ -192,41 +192,53 @@ elif option == "Live Chat":
         else:
             st.error("Please enter your user name.")
 
+    elif option == "Live Chat":
+    st.sidebar.title("Live Chat Options")
+    chat_action = st.sidebar.radio("Choose an action", ("Create a New Chat", "Join an Existing Chat"))
+
+    if chat_action == "Create a New Chat":
+        user_name = st.text_input("Enter your user name", value="")
+        
+        if user_name:
+            chat_code = str(random.randint(1000, 9999))
+            chat_rooms[chat_code] = {"messages": []}
+            save_chat_rooms(chat_rooms)
+
+            st.header("Create a New Chat Room")
+            st.success(f"Your chat room is created! Share this code with others to join: {chat_code}")
+            st.write(f"Your user name: {user_name}")
+        else:
+            st.error("Please enter your user name.")
+
     elif chat_action == "Join an Existing Chat":
-    # Prompt for user name when joining a chat
-    user_name = st.text_input("Enter your user name", value="")
+        user_name = st.text_input("Enter your user name", value="")
 
-    if user_name:
-        # Join an existing chat room
-        chat_code = st.text_input("Enter Chat Room Code")
+        if user_name:
+            chat_code = st.text_input("Enter Chat Room Code")
 
-        if chat_code:
-            if chat_code in chat_rooms:
-                st.header(f"Chat Room {chat_code}")
+            if chat_code:
+                if chat_code in chat_rooms:
+                    st.header(f"Chat Room {chat_code}")
 
-                if chat_code not in st.session_state:
-                    st.session_state[chat_code] = chat_rooms[chat_code]["messages"]
+                    if chat_code not in st.session_state:
+                        st.session_state[chat_code] = chat_rooms[chat_code]["messages"]
 
-                # Display existing messages in the chat room
-                for msg in st.session_state[chat_code]:
-                    st.markdown(f"**{msg['user']}**: {msg['message']}")
+                    for msg in st.session_state[chat_code]:
+                        st.markdown(f"**{msg['user']}**: {msg['message']}")
 
-                # Input to send a message
-                chat_input = st.text_input("Type your message", key="chat_input")
+                    chat_input = st.text_input("Type your message", key="chat_input")
 
-                if st.button("Send Message"):
-                    if chat_input:
-                        # Add the message to the chat room's messages
-                        new_message = {"user": user_name, "message": chat_input}
-                        st.session_state[chat_code].append(new_message)
-                        chat_rooms[chat_code]["messages"].append(new_message)
-                        save_chat_rooms(chat_rooms)
+                    if st.button("Send Message"):
+                        if chat_input:
+                            new_message = {"user": user_name, "message": chat_input}
+                            st.session_state[chat_code].append(new_message)
+                            chat_rooms[chat_code]["messages"].append(new_message)
+                            save_chat_rooms(chat_rooms)
 
-                        # Rerun the app to update the UI without duplicating input boxes
-                        st.experimental_rerun()
+                            st.experimental_rerun()
+                else:
+                    st.error("Invalid chat room code. Please try again.")
+        else:
+            st.error("Please enter your user name before joining.")
 
-            else:
-                st.error("Invalid chat room code. Please try again.")
-    else:
-        st.error("Please enter your user name before joining.")
 
