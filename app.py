@@ -2,6 +2,7 @@ import streamlit as st
 import random
 import os
 import json
+import tempfile
 
 # Existing constants and data loading functions...
 UPLOAD_DIR = "uploaded_files"
