@@ -2,8 +2,6 @@ import streamlit as st
 import random
 import os
 import json
-import zipfile
-import tempfile
 from datetime import datetime
 
 # Directory to store uploaded files
@@ -139,6 +137,7 @@ if option == "Live Chat":
                             for message in st.session_state.messages:
                                 st.markdown(message)
                         
-                        st.text_input("Type your message", value="", key="chat_input")  # Clear input box
+                        # Clear the input box by resetting it
+                        st.text_input("Type your message", value="", key="chat_input")
             else:
                 st.error("Invalid chat room code or missing name. Please try again.")
