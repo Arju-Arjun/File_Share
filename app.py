@@ -168,7 +168,13 @@ elif option == "Live Chat":
                 for msg in st.session_state[chat_code]:
                     st.markdown(f"**{msg['user']}**: {msg['message']}")
 
-                chat_input = st.text_input("Type your message", key=f"chat_input_{chat_code}")
+                # Initialize session state for chat input
+                if f"chat_input_{chat_code}" not in st.session_state:
+                    st.session_state[f"chat_input_{chat_code}"] = ""
+
+                # Chat input field
+                chat_input = st.text_input("Type your message", 
+                                           key=f"chat_input_{chat_code}")
 
                 if st.button("Send Message"):
                     if chat_input:
@@ -176,8 +182,13 @@ elif option == "Live Chat":
                         st.session_state[chat_code].append(new_message)
                         chat_rooms[chat_code]["messages"].append(new_message)
                         save_json(CHAT_ROOMS_FILE, chat_rooms)
+
+                        # Clear input field after submission
+                        st.session_state[f"chat_input_{chat_code}"] = ""
+
                         st.rerun()
             else:
                 st.error("Invalid chat room code.")
         else:
             st.error("Enter a user name before joining.")
+
