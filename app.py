@@ -230,6 +230,8 @@ import streamlit as st
 # Display clickable icons for Instagram, GitHub, and LinkedIn with space between them
 st.markdown(
     '''
+    <br>
+    <br>
     <div style="display: flex; justify-content: center; gap: 20px; padding-top: 20px;">
         <a href="https://www.instagram.com/_arjun._x_/">
             <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="30" height="30">
