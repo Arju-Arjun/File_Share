@@ -3,7 +3,7 @@ import random
 import os
 import json
 import zipfile
-import shutil
+import tempfile
 
 # Directory to store uploaded files
 UPLOAD_DIR = "uploaded_files"
@@ -115,24 +115,37 @@ elif option == "Text Access":
             st.error("Invalid access code. Please try again.")
 
 elif option == "Folder Share":
-    st.header("Upload a Folder (Will be converted to Zip)")
-    uploaded_folder = st.file_uploader("Choose a folder to upload", type=["zip"])
-    
-    if uploaded_folder is not None:
-        # Generate a 4-digit access code
-        access_code = str(random.randint(1000, 9999))
-        folder_path = os.path.join(UPLOAD_DIR, f"folder_{access_code}.zip")
-        
-        # Save the folder as a zip file
-        with open(folder_path, "wb") as f:
-            f.write(uploaded_folder.getbuffer())
-        
-        # Store the access code and folder path persistently
-        folder_shares[access_code] = folder_path
-        save_folder_shares(folder_shares)
-        
-        st.success(f"Folder uploaded successfully as a zip! Your access code is: {access_code}")
-        st.write("Save this code to download your folder later.")
+    st.header("Upload a Folder (Will be automatically zipped)")
+
+    # Multiple file uploader simulating folder upload
+    uploaded_files = st.file_uploader("Choose files to upload", accept_multiple_files=True)
+
+    if uploaded_files:
+        # Create a temporary directory to store files
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            # Save each uploaded file in the temporary directory
+            for uploaded_file in uploaded_files:
+                with open(os.path.join(tmpdirname, uploaded_file.name), "wb") as f:
+                    f.write(uploaded_file.getbuffer())
+
+            # Generate a zip file from the uploaded folder
+            zip_filename = f"folder_{random.randint(1000, 9999)}.zip"
+            zip_path = os.path.join(UPLOAD_DIR, zip_filename)
+
+            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
+                for root, dirs, files in os.walk(tmpdirname):
+                    for file in files:
+                        zipf.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), tmpdirname))
+
+            # Generate an access code
+            access_code = str(random.randint(1000, 9999))
+
+            # Store the access code and zip file path persistently
+            folder_shares[access_code] = zip_path
+            save_folder_shares(folder_shares)
+
+            st.success(f"Folder uploaded successfully and converted to a zip! Your access code is: {access_code}")
+            st.write("Save this code to download your folder later.")
 
 elif option == "Folder Access":
     st.header("Access Your Folder")
@@ -141,8 +154,8 @@ elif option == "Folder Access":
     if st.button("Access Folder"):
         folder_shares = load_folder_shares()  # Reload latest folder shares
         if access_code_input in folder_shares:
-            folder_path = folder_shares[access_code_input]
-            with open(folder_path, "rb") as f:
-                st.download_button("Download Folder", f, file_name=os.path.basename(folder_path))
+            zip_path = folder_shares[access_code_input]
+            with open(zip_path, "rb") as f:
+                st.download_button("Download Folder", f, file_name=os.path.basename(zip_path))
         else:
             st.error("Invalid access code. Please try again.")
