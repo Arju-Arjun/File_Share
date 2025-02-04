@@ -228,8 +228,8 @@ elif option == "Live Chat":
 import streamlit as st
 
 # Display a clickable Instagram icon with smaller size
-st.markdown("""
-[<img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="30" height="30">](https://www.instagram.com/_arjun._x_/)
-""")
-
+st.markdown(
+    '<a href="https://www.instagram.com/_arjun._x_/"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="30" height="30"></a>',
+    unsafe_allow_html=True
+)
 
