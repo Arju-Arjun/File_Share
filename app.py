@@ -1,14 +1,27 @@
 import streamlit as st
 import random
 import os
+import json
 
 # Directory to store uploaded files
 UPLOAD_DIR = "uploaded_files"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# Dictionary to store access codes
-if "file_codes" not in st.session_state:
-    st.session_state.file_codes = {}
+# JSON file to store access codes persistently
+ACCESS_CODES_FILE = "access_codes.json"
+
+def load_access_codes():
+    if os.path.exists(ACCESS_CODES_FILE):
+        with open(ACCESS_CODES_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_access_codes(data):
+    with open(ACCESS_CODES_FILE, "w") as f:
+        json.dump(data, f)
+
+# Load existing access codes
+file_codes = load_access_codes()
 
 st.title("Secure File Upload & Access")
 
@@ -29,8 +42,9 @@ if option == "Upload File":
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         
-        # Store the access code and file path
-        st.session_state.file_codes[access_code] = file_path
+        # Store the access code and file path persistently
+        file_codes[access_code] = file_path
+        save_access_codes(file_codes)
         
         st.success(f"File uploaded successfully! Your access code is: {access_code}")
         st.write("Save this code to download your file later.")
@@ -40,8 +54,9 @@ elif option == "Access File":
     access_code_input = st.text_input("Enter your 4-digit access code")
     
     if st.button("Access File"):
-        if access_code_input in st.session_state.file_codes:
-            file_path = st.session_state.file_codes[access_code_input]
+        file_codes = load_access_codes()  # Reload the latest codes
+        if access_code_input in file_codes:
+            file_path = file_codes[access_code_input]
             with open(file_path, "rb") as f:
                 st.download_button("Download File", f, file_name=os.path.basename(file_path))
         else:
