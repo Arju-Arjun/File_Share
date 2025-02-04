@@ -160,10 +160,16 @@ elif option == "Folder Access":
     
     if st.button("Access Folder"):
         folder_shares = load_folder_shares()  # Reload latest folder shares
+        
         if access_code_input in folder_shares:
             zip_path = folder_shares[access_code_input]
-            with open(zip_path, "rb") as f:
-                st.download_button("Download Folder", f, file_name=os.path.basename(zip_path))
+            
+            # Ensure the file path is correct and exists
+            if os.path.exists(zip_path):
+                with open(zip_path, "rb") as f:
+                    st.download_button("Download Folder", f, file_name=os.path.basename(zip_path))
+            else:
+                st.error(f"Folder not found at the path: {zip_path}")
         else:
             st.error("Invalid access code. Please try again.")
 
