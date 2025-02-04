@@ -227,18 +227,21 @@ elif option == "Live Chat":
 # st.markdown("""[![Instagram](https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png)](https://www.instagram.com/_arjun._x_/)""")
 import streamlit as st
 
-# Display clickable icons for Instagram, GitHub, and LinkedIn with smaller sizes
+# Display clickable icons for Instagram, GitHub, and LinkedIn with space between them
 st.markdown(
     '''
-    <a href="https://www.instagram.com/_arjun._x_/">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="30" height="30">
-    </a>
-    <a href="https://github.com/_arjun_">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Logo_GitHub.png" width="30" height="30">
-    </a>
-    <a href="https://www.linkedin.com/in/arjun-profile/">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/76/LinkedIn_Logo_2023.png" width="30" height="30">
-    </a>
+    <div style="display: flex; justify-content: center; gap: 20px; padding-top: 20px;">
+        <a href="https://www.instagram.com/_arjun._x_/">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="30" height="30">
+        </a>
+        <a href="https://github.com/_arjun_">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Logo_GitHub.png" width="30" height="30">
+        </a>
+        <a href="https://www.linkedin.com/in/arjun-profile/">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/76/LinkedIn_Logo_2023.png" width="30" height="30">
+        </a>
+    </div>
     ''',
     unsafe_allow_html=True
 )
+
