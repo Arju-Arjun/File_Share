@@ -224,3 +224,6 @@ elif option == "Live Chat":
                     st.error("Invalid chat room code. Please try again.")
         else:
             st.error("Please enter your user name before joining.")
+
+Follow me on [Instagram](https://www.instagram.com/_arjun._x_/) for more updates.
+
