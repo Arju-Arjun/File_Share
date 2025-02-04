@@ -5,7 +5,7 @@ import json
 import tempfile
 import zipfile
 
-# Constants
+# Existing constants and data loading functions...
 UPLOAD_DIR = "uploaded_files"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 ACCESS_CODES_FILE = "access_codes.json"
@@ -13,67 +13,91 @@ TEXT_SHARES_FILE = "text_shares.json"
 FOLDER_SHARES_FILE = "folder_shares.json"
 CHAT_ROOMS_FILE = "chat_rooms.json"
 
-# Load and Save Functions
-def load_json(filename):
-    if os.path.exists(filename):
-        with open(filename, "r") as f:
+def load_access_codes():
+    if os.path.exists(ACCESS_CODES_FILE):
+        with open(ACCESS_CODES_FILE, "r") as f:
             return json.load(f)
     return {}
 
-def save_json(filename, data):
-    with open(filename, "w") as f:
+def save_access_codes(data):
+    with open(ACCESS_CODES_FILE, "w") as f:
+        json.dump(data, f)
+
+def load_text_shares():
+    if os.path.exists(TEXT_SHARES_FILE):
+        with open(TEXT_SHARES_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_text_shares(data):
+    with open(TEXT_SHARES_FILE, "w") as f:
+        json.dump(data, f)
+
+def load_folder_shares():
+    if os.path.exists(FOLDER_SHARES_FILE):
+        with open(FOLDER_SHARES_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_folder_shares(data):
+    with open(FOLDER_SHARES_FILE, "w") as f:
+        json.dump(data, f)
+
+def load_chat_rooms():
+    if os.path.exists(CHAT_ROOMS_FILE):
+        with open(CHAT_ROOMS_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_chat_rooms(data):
+    with open(CHAT_ROOMS_FILE, "w") as f:
         json.dump(data, f)
 
 # Load existing data
-file_codes = load_json(ACCESS_CODES_FILE)
-text_shares = load_json(TEXT_SHARES_FILE)
-folder_shares = load_json(FOLDER_SHARES_FILE)
-chat_rooms = load_json(CHAT_ROOMS_FILE)
+file_codes = load_access_codes()
+text_shares = load_text_shares()
+folder_shares = load_folder_shares()
+chat_rooms = load_chat_rooms()
 
-# Streamlit App Title
 st.title("Secure File & Text Sharing with Live Chat")
 
 # Sidebar Navigation
 st.sidebar.title("Navigation")
-option = st.sidebar.radio("Select an option", 
-                          ("File Share", "File Access", 
-                           "Text Share", "Text Access", 
-                           "Folder Share", "Folder Access", 
-                           "Live Chat"))
+option = st.sidebar.radio("Select an option", ("File Share", "File Access", "Text Share", "Text Access", "Folder Share", "Folder Access", "Live Chat"))
 
-# 📂 File Upload
 if option == "File Share":
     st.header("Upload a File")
     uploaded_file = st.file_uploader("Choose a file to upload", type=["png", "jpg", "pdf", "txt", "csv", "docx"])
     
-    if uploaded_file:
+    if uploaded_file is not None:
+        # Generate a 4-digit access code
         access_code = str(random.randint(1000, 9999))
         file_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
         
+        # Save the file
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         
+        # Store the access code and file path persistently
         file_codes[access_code] = file_path
-        save_json(ACCESS_CODES_FILE, file_codes)
+        save_access_codes(file_codes)
         
-        st.success(f"File uploaded! Access code: {access_code}")
+        st.success(f"File uploaded successfully! Your access code is: {access_code}")
         st.write("Save this code to download your file later.")
 
-# 📥 File Access
 elif option == "File Access":
     st.header("Access Your File")
     access_code_input = st.text_input("Enter your 4-digit access code")
     
     if st.button("Access File"):
-        file_codes = load_json(ACCESS_CODES_FILE)
+        file_codes = load_access_codes()  # Reload the latest codes
         if access_code_input in file_codes:
             file_path = file_codes[access_code_input]
             with open(file_path, "rb") as f:
                 st.download_button("Download File", f, file_name=os.path.basename(file_path))
         else:
-            st.error("Invalid access code.")
+            st.error("Invalid access code. Please try again.")
 
-# 📝 Text Share
 elif option == "Text Share":
     st.header("Share a Text Message")
     text_input = st.text_area("Enter text to share")
@@ -82,112 +106,123 @@ elif option == "Text Share":
         if text_input:
             access_code = str(random.randint(1000, 9999))
             text_shares[access_code] = text_input
-            save_json(TEXT_SHARES_FILE, text_shares)
-            st.success(f"Text shared! Access code: {access_code}")
+            save_text_shares(text_shares)
+            st.success(f"Text shared successfully! Your access code is: {access_code}")
+            st.write("Save this code to access your text later.")
         else:
-            st.error("Enter text before sharing.")
+            st.error("Please enter some text before sharing.")
 
-# 🔎 Text Access
 elif option == "Text Access":
     st.header("Access Shared Text")
     access_code_input = st.text_input("Enter your 4-digit access code")
     
     if st.button("Access Text"):
-        text_shares = load_json(TEXT_SHARES_FILE)
+        text_shares = load_text_shares()  # Reload latest text shares
         if access_code_input in text_shares:
             st.text_area("Shared Text", text_shares[access_code_input], height=200, disabled=True)
         else:
-            st.error("Invalid access code.")
+            st.error("Invalid access code. Please try again.")
 
-# 📁 Folder Share
 elif option == "Folder Share":
-    st.header("Upload a Folder (Automatically Zipped)")
-    
+    st.header("Upload a Folder (Will be automatically zipped)")
+
+    # Multiple file uploader simulating folder upload
     uploaded_files = st.file_uploader("Choose files to upload", accept_multiple_files=True)
 
     if uploaded_files:
+        # Create a temporary directory to store files
         with tempfile.TemporaryDirectory() as tmpdirname:
+            # Save each uploaded file in the temporary directory
             for uploaded_file in uploaded_files:
                 with open(os.path.join(tmpdirname, uploaded_file.name), "wb") as f:
                     f.write(uploaded_file.getbuffer())
 
+            # Generate a zip file from the uploaded folder
             zip_filename = f"folder_{random.randint(1000, 9999)}.zip"
             zip_path = os.path.join(UPLOAD_DIR, zip_filename)
 
             with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
-                for root, _, files in os.walk(tmpdirname):
+                for root, dirs, files in os.walk(tmpdirname):
                     for file in files:
-                        zipf.write(os.path.join(root, file), file)
+                        zipf.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), tmpdirname))
 
+            # Generate an access code
             access_code = str(random.randint(1000, 9999))
+
+            # Store the access code and zip file path persistently
             folder_shares[access_code] = zip_path
-            save_json(FOLDER_SHARES_FILE, folder_shares)
+            save_folder_shares(folder_shares)
 
-            st.success(f"Folder zipped & uploaded! Access code: {access_code}")
+            st.success(f"Folder uploaded successfully and converted to a zip! Your access code is: {access_code}")
+            st.write("Save this code to download your folder later.")
 
-# 📂 Folder Access
 elif option == "Folder Access":
     st.header("Access Your Folder")
     access_code_input = st.text_input("Enter your 4-digit access code")
     
     if st.button("Access Folder"):
-        folder_shares = load_json(FOLDER_SHARES_FILE)
+        folder_shares = load_folder_shares()  # Reload latest folder shares
         if access_code_input in folder_shares:
             zip_path = folder_shares[access_code_input]
             with open(zip_path, "rb") as f:
                 st.download_button("Download Folder", f, file_name=os.path.basename(zip_path))
         else:
-            st.error("Invalid access code.")
+            st.error("Invalid access code. Please try again.")
 
-# 💬 Live Chat
 elif option == "Live Chat":
     st.sidebar.title("Live Chat Options")
     chat_action = st.sidebar.radio("Choose an action", ("Create a New Chat", "Join an Existing Chat"))
-
+    
     if chat_action == "Create a New Chat":
-        user_name = st.text_input("Enter your user name")
-
+        # Prompt for user name when creating a chat
+        user_name = st.text_input("Enter your user name", value="")
+        
         if user_name:
+            # Create a new chat room
             chat_code = str(random.randint(1000, 9999))
+            
+            # Initialize chat room with an empty message list
             chat_rooms[chat_code] = {"messages": []}
-            save_json(CHAT_ROOMS_FILE, chat_rooms)
-
-            st.success(f"Chat Room Created! Code: {chat_code}")
+            save_chat_rooms(chat_rooms)
+            
+            st.header("Create a New Chat Room")
+            st.success(f"Your chat room is created! Share this code with others to join: {chat_code}")
+            st.write(f"Your user name: {user_name}")
+            
         else:
-            st.error("Enter a user name.")
+            st.error("Please enter your user name.")
 
     elif chat_action == "Join an Existing Chat":
-        user_name = st.text_input("Enter your user name")
-
+        # Prompt for user name when joining a chat
+        user_name = st.text_input("Enter your user name", value="")
+        
         if user_name:
+            # Join an existing chat room
             chat_code = st.text_input("Enter Chat Room Code")
+            
+            if chat_code:
+                if chat_code in chat_rooms:
+                    st.header(f"Chat Room {chat_code}")
+                    if "messages" not in st.session_state:
+                        st.session_state.messages = []
 
-            if chat_code and chat_code in chat_rooms:
-                st.header(f"Chat Room {chat_code}")
+                    # Display existing messages in the chat room
+                    for msg in chat_rooms[chat_code]["messages"]:
+                        st.markdown(f"**{msg['user']}**: {msg['message']}")
 
-                if chat_code not in st.session_state:
-                    st.session_state[chat_code] = chat_rooms[chat_code]["messages"]
-
-                for msg in st.session_state[chat_code]:
-                    st.markdown(f"**{msg['user']}**: {msg['message']}")
-
-                if f"chat_input_{chat_code}" not in st.session_state:
-                    st.session_state[f"chat_input_{chat_code}"] = ""
-
-                chat_input = st.text_input("Type your message", key=f"chat_input_{chat_code}")
-
-                if st.button("Send Message"):
-                    if chat_input:
-                        new_message = {"user": user_name, "message": chat_input}
-                        st.session_state[chat_code].append(new_message)
-                        chat_rooms[chat_code]["messages"].append(new_message)
-                        save_json(CHAT_ROOMS_FILE, chat_rooms)
-                
-                        # ✅ Clear input first, then rerun
-                        st.session_state[f"chat_input_{chat_code}"] = ""  
-                        st.experimental_rerun()
-
-            else:
-                st.error("Invalid chat room code.")
+                    # Input to send message
+                    chat_input = st.text_input("Type your message")
+                    
+                    if st.button("Send Message"):
+                        if chat_input:
+                            # Add the message to the chat room's messages
+                            chat_rooms[chat_code]["messages"].append({"user": user_name, "message": chat_input})
+                            save_chat_rooms(chat_rooms)
+                            
+                            # Show the new message in the chat
+                            st.session_state.messages.append({"user": user_name, "message": chat_input})
+                            st.text_input("Type your message", value="", key="chat_input")  # Clear input box
+                else:
+                    st.error("Invalid chat room code. Please try again.")
         else:
-            st.error("Enter a user name before joining.")
+            st.error("Please enter your user name before joining.")
