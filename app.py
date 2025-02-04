@@ -225,5 +225,5 @@ elif option == "Live Chat":
         else:
             st.error("Please enter your user name before joining.")
 
-Follow me on [Instagram](https://www.instagram.com/_arjun._x_/) for more updates.
+Follow me on [Instagram](https://www.instagram.com) for more updates.
 
