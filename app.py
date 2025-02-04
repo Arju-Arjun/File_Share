@@ -2,6 +2,8 @@ import streamlit as st
 import random
 import os
 import json
+import tempfile
+
 
 # Existing constants and data loading functions...
 UPLOAD_DIR = "uploaded_files"
@@ -144,14 +146,12 @@ elif option == "Folder Share":
                     for file in files:
                         zipf.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), tmpdirname))
 
-            # Generate an access code
+            # Save the access code for the zip file
             access_code = str(random.randint(1000, 9999))
-
-            # Store the access code and zip file path persistently
             folder_shares[access_code] = zip_path
             save_folder_shares(folder_shares)
 
-            st.success(f"Folder uploaded successfully and converted to a zip! Your access code is: {access_code}")
+            st.success(f"Folder uploaded and zipped successfully! Your access code is: {access_code}")
             st.write("Save this code to download your folder later.")
 
 elif option == "Folder Access":
