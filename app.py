@@ -169,13 +169,15 @@ elif option == "Live Chat":
                 for msg in st.session_state[chat_code]:
                     st.markdown(f"**{msg['user']}**: {msg['message']}")
 
-                # Initialize the chat input if not already in session state
-                if f"chat_input_{chat_code}" not in st.session_state:
-                    st.session_state[f"chat_input_{chat_code}"] = ""
-
                 # Chat input box with dynamic value from session state
-                chat_input = st.text_input("Type your message", key=f"chat_input_{chat_code}", 
-                                           value=st.session_state[f"chat_input_{chat_code}"])
+                chat_input_key = f"chat_input_{chat_code}"
+
+                if chat_input_key not in st.session_state:
+                    st.session_state[chat_input_key] = ""
+
+                # Set the value of chat input field from session state
+                chat_input = st.text_input("Type your message", key=chat_input_key, 
+                                           value=st.session_state[chat_input_key])
 
                 if st.button("Send Message"):
                     if chat_input:
@@ -185,10 +187,10 @@ elif option == "Live Chat":
                         chat_rooms[chat_code]["messages"].append(new_message)
                         save_json(CHAT_ROOMS_FILE, chat_rooms)
 
-                        # Before re-rendering the page, update session state to clear input
-                        st.session_state[f"chat_input_{chat_code}"] = ""  # This will clear the input field
+                        # Clear the input field by resetting its session state value after sending message
+                        st.session_state[chat_input_key] = ""  # Clear input field after sending message
 
-                        # Directly update the UI with new message
+                        # Update the UI immediately with the new message
                         st.session_state[f"new_message_{chat_code}"] = new_message  # Store the new message in session state
             else:
                 st.error("Invalid chat room code.")
