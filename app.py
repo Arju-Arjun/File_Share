@@ -135,6 +135,7 @@ elif option == "Folder Access":
         else:
             st.error("Invalid access code!")
 # Live Chat
+# Live Chat
 elif option == "Live Chat":
     st.sidebar.title("Live Chat Options")
     chat_action = st.sidebar.radio("Choose an action", ("Create a New Chat", "Join an Existing Chat"))
@@ -185,7 +186,10 @@ elif option == "Live Chat":
                         save_json(CHAT_ROOMS_FILE, chat_rooms)
 
                         # Reset the input box after sending the message
-                        st.session_state[f"chat_input_{chat_code}"] = ""  # Clear the chat input
+                        try:
+                            st.session_state[f"chat_input_{chat_code}"] = ""  # Clear the chat input
+                        except Exception as e:
+                            st.error(f"Error resetting chat input: {e}")
 
                         # Directly update the UI with new message
                         st.session_state[f"new_message_{chat_code}"] = new_message  # Store the new message in session state
@@ -194,4 +198,3 @@ elif option == "Live Chat":
         else:
             st.error("Enter a user name before joining.")
 
-# Live Chat
