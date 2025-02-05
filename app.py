@@ -134,8 +134,7 @@ elif option == "Folder Access":
                 st.download_button("Download Folder", f, file_name=os.path.basename(zip_path))
         else:
             st.error("Invalid access code!")
-# Live Chat
-# Live Chat
+
 # Live Chat
 elif option == "Live Chat":
     st.sidebar.title("Live Chat Options")
@@ -186,7 +185,7 @@ elif option == "Live Chat":
                         chat_rooms[chat_code]["messages"].append(new_message)
                         save_json(CHAT_ROOMS_FILE, chat_rooms)
 
-                        # Update session state to clear input after sending the message
+                        # Before re-rendering the page, update session state to clear input
                         st.session_state[f"chat_input_{chat_code}"] = ""  # This will clear the input field
 
                         # Directly update the UI with new message
@@ -195,4 +194,3 @@ elif option == "Live Chat":
                 st.error("Invalid chat room code.")
         else:
             st.error("Enter a user name before joining.")
-
