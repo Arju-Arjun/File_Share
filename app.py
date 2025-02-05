@@ -83,6 +83,7 @@ if option == "Live Chat":
                         save_json(CHAT_ROOMS_FILE, chat_rooms)
 
                         # Clear the input box after sending the message
+                        st.session_state[f"chat_input_{chat_code}"] = ""
                         st.experimental_rerun()
             else:
                 st.error("Invalid chat room code.")
