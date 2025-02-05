@@ -84,7 +84,7 @@ if option == "Live Chat":
 
                         # Clear the input box after sending the message
                         st.session_state[f"chat_input_{chat_code}"] = ""
-                        st.experimental_rerun()
+                        st.rerun()
             else:
                 st.error("Invalid chat room code.")
         else:
